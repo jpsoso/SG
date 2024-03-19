@@ -17,7 +17,7 @@ class cylinder extends THREE.Object3D {
     // Ya podemos construir el Mesh
     this.cyl = new THREE.Mesh (cylGeom, cylMat);
     // Y añadirlo como hijo del Object3D (el this)
-    this.add (this.cyl);
+    //this.add (this.cyl);
     
   }
   

@@ -12,18 +12,6 @@ import { cubo } from './cubo.js'
 import { cone } from './cone.js'
 import { cylinder } from './cylinder.js'
  
-// DUDAS 
-/**
- *
- * 2º Update de las figuras: una función para cambiar los parámetros del cono y cilindro
- * 3º En el método update, cómo poner las funciones update de cada elemento
- */
-
-/// La clase fachada del modelo
-/**
- * Usaremos una clase derivada de la clase Scene de Three.js para llevar el control de la escena y de todo lo que ocurre en ella.
- */
-
 class MyScene extends THREE.Scene {
   constructor (myCanvas) {
     super();
@@ -50,50 +38,18 @@ class MyScene extends THREE.Scene {
     this.axis = new THREE.AxesHelper (2);
     this.add (this.axis);
 
-    // Eje del cubo y lo movemos a la posición
-    this.Cubeaxis = new THREE.AxesHelper (2);
-    this.add (this.Cubeaxis);
-    this.Cubeaxis.position.x = 4;
-    this.Cubeaxis.position.y = 0;
-    this.Cubeaxis.position.z = 0;
-
-    // Eje del cono y lo movemos a la posición
-    this.Coneaxis = new THREE.AxesHelper (2);
-    this.add (this.Cubeaxis);
-    this.Coneaxis.position.x = 4;
-    this.Coneaxis.position.y = 4;
-    this.Coneaxis.position.z = 0;
-  
-    // Eje del cilindro y lo movemos a la posición
-    //this.Cylaxis = new THREE.AxesHelper (2);
-    //this.add (this.Cylaxis);
-    //this.Cyleaxis.position.x = 1;
-    //this.Cyleaxis.position.y = 4;
-    //this.Cyleaxis.position.z = 0;
-
+    this.axis2 = new THREE.AxesHelper (2);
+    this.add (this.axis2);
+    this.axis2.x = 4;
+    this.axis2.position.y = 0;
+    this.axis2.position.z = 0;
     
     // Por último creamos el modelo.
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
 
-    this.cube = new cubo(this.gui, "Dimensiones de la caja");
+    this.cube = new cubo(this.gui, "Parámetros revolución");
     this.add (this.cube);
-    this.cube.position.x = 4;
-    this.cube.position.y = 0;
-    this.cube.position.z = 0;
-
-
-    this.cone = new cone(this.gui, "Dimensiones del cono");
-    this.add (this.cone); 
-    this.cone.position.x = 4;
-    this.cone.position.y = 4;
-    this.cone.position.z = 0;
-
-    this.cyl = new cylinder(this.gui, "Dimensiones del cilindro");
-    this.add (this.cyl);
-    this.cyl.position.x = 0;
-    this.cyl.position.y = 4;
-    this.cyl.position.z = 0; 
   }
   
   initStats() {
@@ -254,11 +210,7 @@ class MyScene extends THREE.Scene {
     
     // Se actualiza el resto del modelo
     this.cube.update();
-    this.cone.update();
-    this.cyl.update();
 
-    // Esto o lo de abajo
-    // this.model.update();
 
     
     

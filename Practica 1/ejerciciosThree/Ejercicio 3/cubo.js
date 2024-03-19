@@ -1,5 +1,7 @@
 import * as THREE from '../libs/three.module.js'
- 
+
+let scale = 4;
+
 class cubo extends THREE.Object3D {
   constructor(gui,titleGui) {
     super();
@@ -7,38 +9,58 @@ class cubo extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
-    
-    // Creación de la shape de los ejemplos
-    var shape = new THREE.Shape();
-    shape.moveTo(0, 1);
-    shape.lineTo (-5, 1);
-    shape.lineTo (-5, 3);
-    shape . bezierCurveTo (-5, 3, -2, 9, -1, 4.5) ;
-    shape . splineThru ( [new THREE. Vector2 (12 , 5) ,    new THREE. Vector2 (8 , -5) , new THREE. Vector2 (10 , -15) ] ) ;
-    shape . quadraticCurveTo (0 , -10, -10, -15) ;
-    
-    var options1 = { depth : 8 , steps : 2 , bevelEnabled : false } ;
-    var geometry1 = new THREE. ExtrudeGeometry ( shape , options1 ) ;
-    
-    this.shapE = new THREE.Mesh(geometry1, boxMat);
-    this.add (this.shapE);
-  
+
+    this.create(3, Math.PI * 2);
+
+
+    var perfilPeon = new THREE.BufferGeometry().setFromPoints(this.points);
+    perfilPeon.rotateY(Math.PI/2);
+    this.profile = new THREE.Line(perfilPeon, this.mat);
+    this.add(this.profile);
+
   }
   
+  create(segments, phiLength) { // Este método crea los dos peones
+
+    // Creamos los puntos a través de pintar un shape
+    this.shape = new THREE.Shape();
+    this.shape.moveTo(0 / scale, 1 / scale);
+    this.shape.lineTo (-5 / scale, 1 / scale);
+    this.shape.lineTo (-5 / scale, 3 / scale);
+    this.shape.quadraticCurveTo(-1 / scale, 4.5 / scale, -2 / scale, 9 / scale);
+    this.shape.quadraticCurveTo(-4 / scale, 12 / scale, 0 / scale, 13 / scale);
+    this.points = this.shape.extractPoints (6).shape;
+
+    // Creamos la geometría variable y la estática que solo varían los segmentos
+    var geometry = new THREE.LatheGeometry (this.points , segments, 0, phiLength);
+    geometry.rotateY(-Math.PI);
+    var geometry2 = new THREE.LatheGeometry (this.points , segments, 0, Math.PI * 2);
+    geometry2.rotateY(-Math.PI);
+
+    // Usamos el material
+    this.mat = new THREE.MeshNormalMaterial({flatShading:true, side:THREE.DoubleSide}); // Creamos el material para que se vean los segmentos y para que se vea por dentro
+
+    // Creamos el mesh
+    this.peon = new THREE.Mesh(geometry, this.mat);
+    this.peon2 = new THREE.Mesh(geometry2, this.mat);
+    this.peon.position.x = 4
+    this.peon2.position.x = 8; 
+    this.add (this.peon);
+    this.add (this.peon2);
+  }
+
   createGUI (gui,titleGui) {
     // Controles para el tamaño, la orientación y la posición de la caja
     this.guiControls = {
-      sizeX : 1.0,
-      sizeY : 1.0,
-      sizeZ : 1.0,
+        segments : 3,
+        phiLength: Math.PI * 2,
       
       // Un botón para dejarlo todo en su posición inicial
       // Cuando se pulse se ejecutará esta función.
       reset : () => {
-        this.guiControls.sizeX = 1.0;
-        this.guiControls.sizeY = 1.0;
-        this.guiControls.sizeZ = 1.0;
-        this.reCreate(1,1,1);
+        this.guiControls.segments = 3;
+        this.guiControls.phiLength = Math.PI * 2
+        this.reCreate(3, Math.PI * 2);
       }
     } 
     
@@ -47,25 +69,22 @@ class cubo extends THREE.Object3D {
     // Estas lineas son las que añaden los componentes de la interfaz
     // Las tres cifras indican un valor mínimo, un máximo y el incremento
     // El método   listen()   permite que si se cambia el valor de la variable en código, el deslizador de la interfaz se actualice
-    folder.add (this.guiControls, 'sizeX', 0.1, 5.0, 0.01)
-      .name ('Tamaño X : ')
-      .onChange ( (x) => this.reCreate(x, this.guiControls.sizeY, this.guiControls.sizeZ))
-      .listen(); // hacer esto con el resto
-    folder.add (this.guiControls, 'sizeY', 0.1, 5.0, 0.01)
-      .name ('Tamaño Y : ')
-      .onChange ( (y) => this.reCreate(this.guiControls.sizeX, y, this.guiControls.sizeZ))
+    folder.add (this.guiControls, 'segments', 3, 20, 1)
+      .name ('Resolución : ')
+      .onChange ( (segments) => this.reCreate(segments, this.guiControls.phiLength))
       .listen();
-    folder.add (this.guiControls, 'sizeZ', 0.1, 5.0, 0.01)
-      .name ('Tamaño Z : ')
-      .onChange ( (z) => this.reCreate(this.guiControls.sizeX, this.guiControls.sizeY, z))
-      .listen();
-    
+    folder.add (this.guiControls, 'phiLength', 1, 6.3, 0.01)
+      .name ('Ángulo : ')
+      .onChange ( (phiLength) => this.reCreate(this.guiControls.segments, phiLength))
+      .listen();    
     folder.add (this.guiControls, 'reset').name ('[ Reset ]');
   }
 
-  reCreate (width, height, depth) {
-    this.box.geometry.dispose();
-    this.box.geometry = new THREE.BoxGeometry (width, height, depth);
+  reCreate(segments, phiLength) {
+    this.peon.geometry.dispose();
+    this.peon2.geometry.dispose();
+    this.peon.geometry = new THREE.LatheGeometry (this.points , segments, 0, phiLength);
+    this.peon2.geometry = new THREE.LatheGeometry (this.points , segments, 0, Math.PI * 2);
   }
 
   update () {

@@ -9,18 +9,18 @@ class cubo extends THREE.Object3D {
     this.createGUI(gui,titleGui);
     
     // Un Mesh se compone de geometría y material
-    var boxGeom = new THREE.BoxGeometry ();
+    // var boxGeom = new THREE.BoxGeometry ();
     
     // Como material se crea uno a partir de un color
-    var boxMat = new THREE.MeshNormalMaterial();
+    // var boxMat = new THREE.MeshNormalMaterial();
     
     // Ya podemos construir el Mesh
-    this.box = new THREE.Mesh (boxGeom, boxMat);
+    // this.box = new THREE.Mesh (boxGeom, boxMat);
     
     // Y añadirlo como hijo del Object3D (el this)
-    this.add (this.box);
+    // this.add (this.box);
 
-    /* // Creación de la shape de los ejemplos
+    // Creación de la shape de los ejemplos
     var shape = new THREE.Shape();
     shape . moveTo( -10 , -15) ;
     shape . lineTo ( -10 , 15) ;
@@ -34,7 +34,7 @@ class cubo extends THREE.Object3D {
     
     this.shapE = new THREE.Mesh(geometry1, boxMat);
     this.add (this.shapE);
-    */
+    
   }
   
   createGUI (gui,titleGui) {

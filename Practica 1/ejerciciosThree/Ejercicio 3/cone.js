@@ -18,7 +18,7 @@ class cone extends THREE.Object3D {
     this.cone = new THREE.Mesh (coneGeom, coneMat);
 
     // Y añadirlo como hijo del Object3D (el this)
-    this.add (this.cone);
+    //this.add (this.cone);
     
   }
   
